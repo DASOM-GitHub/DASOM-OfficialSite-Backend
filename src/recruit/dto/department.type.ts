@@ -1,0 +1,1 @@
+export type DepartmentType = '컴소' | '컴정' | '인소';
