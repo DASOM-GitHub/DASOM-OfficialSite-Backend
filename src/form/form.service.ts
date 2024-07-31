@@ -14,23 +14,4 @@ export class FormService {
         return createdForm.save();
     }
 
-    async findAll(): Promise<Form[]> {
-        return await this.formModel.find().exec();
-    }
-
-    async findOne(id: string): Promise<Form> {
-        const objId = new mongoose.Types.ObjectId(id);
-        return await this.formModel.findOne({ _id: objId}).exec();
-    } 
-
-    async update(id: string, createFormDto: CreateFormDto): Promise<Form> {
-        const objId = new mongoose.Types.ObjectId(id);
-        return await this.formModel.findOneAndUpdate({ _id: objId}, { data: createFormDto }, { new: true }).exec();
-    }
-
-    async remove(id: string): Promise<Form> {    
-        const objId = new mongoose.Types.ObjectId(id);
-        return await this.formModel.findOneAndDelete({ _id: objId }).exec();
-    }   
-
 }
