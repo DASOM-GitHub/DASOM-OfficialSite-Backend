@@ -1,0 +1,17 @@
+import { Injectable } from '@nestjs/common';
+import { CreateFormDto } from './dto/create-form.dto';
+import { Form } from './schema/form.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import mongoose from "mongoose";
+
+@Injectable()
+export class FormService {
+    constructor(@InjectModel(Form.name) private formModel: Model<Form>) {}
+
+    async create(createFormDto: CreateFormDto): Promise<Form> {
+        const createdForm = new this.formModel({ data: createFormDto});
+        return createdForm.save();
+    }
+
+}
