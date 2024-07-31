@@ -8,6 +8,7 @@ import { InjectModel } from "@nestjs/mongoose";
 export class RecruitService {
   constructor(@InjectModel(Recruit.name) private recruitModel: Model<Recruit>) {}
 
+  // apply : 신규 지원자 등록
   async apply(applyDto: ApplyDto): Promise<Recruit> {
     const application = new this.recruitModel(applyDto);
     try {
@@ -20,8 +21,16 @@ export class RecruitService {
     }
   }
 
-  async findAll(): Promise<Recruit[]> {
-    return await this.recruitModel.find().exec();
-  }
+  // findAll : 모든 지원자 조회
+
+
+  // findOne : id를 기준으로 특정 지원자 조회
+
+
+  // update : id를 기준으로 특정 지원자 수정
+
+
+  // remove : id를 기준으로 특정 지원자 삭제
+
 
 }
