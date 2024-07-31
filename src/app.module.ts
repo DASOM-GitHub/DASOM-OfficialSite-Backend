@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { RecruitModule } from './recruit/recruit.module';
 import { MongooseModule } from "@nestjs/mongoose";
+import { FormModule } from './form/form.module';
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import dbConfig from "./db.config";
 
@@ -19,6 +20,7 @@ import dbConfig from "./db.config";
       inject: [ConfigService],
     }),
     RecruitModule,
+    FormModule,
   ]
 })
 export class AppModule {}
