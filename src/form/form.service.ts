@@ -9,9 +9,21 @@ import mongoose from "mongoose";
 export class FormService {
     constructor(@InjectModel(Form.name) private formModel: Model<Form>) {}
 
+    // create : 새로운 Form 생성
     async create(createFormDto: CreateFormDto): Promise<Form> {
         const createdForm = new this.formModel({ data: createFormDto});
         return createdForm.save();
     }
+
+    // findAll : 모든 Form 조회
+
+
+    // findOne : id를 기준으로 특정 Form 조회
+
+
+    // update : id를 기준으로 특정 Form 수정
+
+
+    // remove : id를 기준으로 특정 Form 삭제
 
 }
