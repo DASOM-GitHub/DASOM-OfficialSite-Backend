@@ -3,6 +3,7 @@ import { RecruitModule } from './recruit/recruit.module';
 import { MongooseModule } from "@nestjs/mongoose";
 import { FormModule } from './form/form.module';
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ServiceSettingsModule } from './service-settings/service-settings.module';
 import dbConfig from "./db.config";
 
 @Module({
@@ -21,6 +22,7 @@ import dbConfig from "./db.config";
     }),
     RecruitModule,
     FormModule,
-  ]
+    ServiceSettingsModule,
+  ],
 })
 export class AppModule {}
