@@ -3,7 +3,7 @@ import { ServiceSettingsService } from "./service-settings.service";
 import { ServiceSettingsDto } from "./dto/service-settings.dto";
 import { ServiceSettings } from "./schema/service-settings.schema";
 
-@Controller('service-settings')
+@Controller('api/service')
 export class ServiceSettingsController {
   constructor(private serviceSettingsService: ServiceSettingsService) {}
 
