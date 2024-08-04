@@ -6,7 +6,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import { ServiceSettingsService } from "../service-settings/service-settings.service";
 import { ServiceSettings } from "../service-settings/schema/service-settings.schema";
 import { isAfter, isBefore } from "date-fns";
-import * as moment from 'moment-timezone';
 
 @Injectable()
 export class RecruitService {
@@ -33,7 +32,7 @@ export class RecruitService {
   async findAll(): Promise<Recruit[]> {
     const applicants: Recruit[] = await this.recruitModel.find().exec();
     applicants.forEach((recruit) => {
-      recruit.applyDate = moment(recruit.applyDate, moment.ISO_8601).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss');
+      recruit.applyDate = this.serviceSettingsService.convertUtcDateToKst(recruit.applyDate);
     });
     return applicants;
   }

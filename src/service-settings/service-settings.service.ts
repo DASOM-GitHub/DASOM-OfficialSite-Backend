@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { ServiceSettings } from "./schema/service-settings.schema";
 import { Model } from "mongoose";
 import { ServiceSettingsDto } from "./dto/service-settings.dto";
+import * as moment from 'moment-timezone';
 
 @Injectable()
 export class ServiceSettingsService {
@@ -24,13 +25,18 @@ export class ServiceSettingsService {
 
   // findAll : 모든 설정 조회
   async findAll(): Promise<ServiceSettings[]> {
-    return await this.serviceSettingsModel.find().exec();
+    const settings = await this.serviceSettingsModel.find().exec();
+    settings.forEach((setting) => {
+      setting.value = this.convertUtcDateToKst(setting.value);
+    })
+    return settings;
   }
 
   // findByKey : 특정 설정 조회
   async findByKey(key: string): Promise<ServiceSettings> {
     const setting = await this.serviceSettingsModel.findOne({ key }).exec();
     if (!setting) throw new NotFoundException('Setting Not Found');
+    setting.value = this.convertUtcDateToKst(setting.value);
     return setting;
   }
 
@@ -48,5 +54,11 @@ export class ServiceSettingsService {
     const setting = await this.serviceSettingsModel.findOneAndDelete({ key }).exec();
     if (!setting) throw new NotFoundException('Setting Not Found');
     return { key };
+  }
+
+
+  // convertUtcDateToKst : UTC 시간을 한국 시간으로 변환
+  convertUtcDateToKst(date: string): string {
+    return moment(date, moment.ISO_8601).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss')
   }
 }
