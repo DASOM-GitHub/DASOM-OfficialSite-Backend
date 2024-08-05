@@ -61,4 +61,4 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}:latest
             docker stop ${{ secrets.DOCKER_IMAGENAME }} || true
             docker rm ${{ secrets.DOCKER_IMAGENAME }} || true
-            docker run -d --name ${{ secrets.DOCKER_IMAGENAME }} -p 3000:3000 ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}:latest
+            docker run -d --name ${{ secrets.DOCKER_IMAGENAME }} -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}:latest
