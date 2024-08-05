@@ -29,7 +29,13 @@ export class RecruitService {
   }
 
   // findAll : 모든 지원자 조회
-
+  async findAll(): Promise<Recruit[]> {
+    const applicants: Recruit[] = await this.recruitModel.find().exec();
+    applicants.forEach((recruit) => {
+      recruit.applyDate = this.serviceSettingsService.convertUtcDateToKst(recruit.applyDate);
+    });
+    return applicants;
+  }
 
   // findOne : id를 기준으로 특정 지원자 조회
 
