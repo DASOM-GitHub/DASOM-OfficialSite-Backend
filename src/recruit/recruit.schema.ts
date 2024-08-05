@@ -30,6 +30,9 @@ export class Recruit {
 
   @Prop({ required: true })
   reasonForApply: string;
+
+  @Prop({ default: () => new Date().toISOString() })
+  applyDate: string;
 }
 
 export const RecruitSchema = SchemaFactory.createForClass(Recruit)
