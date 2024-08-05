@@ -17,6 +17,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '18'
+      
+      - name: Create env directory
+        run: mkdir -p env
 
       - name: Create .env.prod file
         run: echo "${{ secrets.ENV_PROD }}" > env/.env.prod
