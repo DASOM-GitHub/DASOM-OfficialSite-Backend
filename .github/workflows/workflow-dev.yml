@@ -44,6 +44,8 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}:${{ env.CURRENT_TIME }},
             ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}:cache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}:cache,mode=max
           platforms: linux/amd64,linux/arm64
 
   deploy:
@@ -58,7 +60,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}:latest
-            docker stop ${{ secrets.DOCKER_IMAGENAME }} || true
-            docker rm ${{ secrets.DOCKER_IMAGENAME }} || true
-            docker run -d --name ${{ secrets.DOCKER_IMAGENAME }} -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}:latest
+            cd ~/dasom
+            docker-compose pull
+            docker-compose up -d
+            docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep -E "^${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}:" | grep -v ':latest' | awk '{print $2}' | xargs -r docker rmi
