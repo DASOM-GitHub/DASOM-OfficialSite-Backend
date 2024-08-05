@@ -36,8 +36,9 @@ export class RecruitService {
 
   // update : id를 기준으로 특정 지원자 수정
 
-
+  
   // remove : id를 기준으로 특정 지원자 삭제
+
 
 
   // isRecruitmentActive : 현재 지원 기간인지 확인
