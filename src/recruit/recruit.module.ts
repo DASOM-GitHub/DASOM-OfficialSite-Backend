@@ -5,6 +5,7 @@ import { RecruitService } from './recruit.service';
 import { Recruit, RecruitSchema } from './recruit.schema';
 import { getConnectionToken } from '@nestjs/mongoose';
 import * as AutoIncrementFactory from 'mongoose-sequence';
+import { ServiceSettingsModule } from "../service-settings/service-settings.module";
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import * as AutoIncrementFactory from 'mongoose-sequence';
         inject: [getConnectionToken()],
       },
     ]),
+    ServiceSettingsModule,
   ],
   controllers: [RecruitController],
   providers: [RecruitService],

@@ -14,7 +14,10 @@ export class RecruitController {
   }
 
   // findAll : 모든 지원자 조회
-
+  @Get()
+  findAll(): Promise<Recruit[]> {
+    return this.recruitService.findAll();
+  }
 
   // findOne : id를 기준으로 특정 지원자 조회
 
