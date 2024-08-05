@@ -59,6 +59,6 @@ export class ServiceSettingsService {
 
   // convertUtcDateToKst : UTC 시간을 한국 시간으로 변환
   convertUtcDateToKst(date: string): string {
-    return moment(date, moment.ISO_8601).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss')
+    return moment(date, moment.ISO_8601).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss');
   }
 }
