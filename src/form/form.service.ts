@@ -16,14 +16,31 @@ export class FormService {
     }
 
     // findAll : 모든 Form 조회
+    
+    async findAll(): Promise<Form[]> {
+        return this.formModel.find().exec();
+    }
 
 
     // findOne : id를 기준으로 특정 Form 조회
 
+    async findOne(id: string): Promise<Form> {
+        return this.formModel.findById(id).exec();
+    }
+
 
     // update : id를 기준으로 특정 Form 수정
 
+    async update(id: string, updateFormDto: CreateFormDto): Promise<Form> {
+        return this.formModel.findByIdAndUpdate(id, { data: updateFormDto }, { new: true }).exec();
+    }
+    
 
     // remove : id를 기준으로 특정 Form 삭제
+
+    async remove(id: string): Promise<Form> {
+        return this.formModel.findByIdAndDelete(id).exec();
+    }
+
 
 }
