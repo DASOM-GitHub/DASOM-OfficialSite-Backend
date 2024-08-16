@@ -32,6 +32,7 @@
     "class-validator": "^0.14.1",
     "cross-env": "^7.0.3",
     "date-fns": "^3.6.0",
+    "dotenv": "^16.4.5",
     "moment-timezone": "^0.5.45",
     "mongoose": "^8.5.1",
     "mongoose-sequence": "^6.0.1",
