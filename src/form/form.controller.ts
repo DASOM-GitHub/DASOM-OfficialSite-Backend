@@ -14,14 +14,34 @@ export class FormController {
 
     // findAll : 모든 Form 조회
 
+    @Get()
+    findAll() {
+        return this.formService.findAll();
+    }
+
 
     // findOne : id를 기준으로 특정 Form 조회
+
+    @Get('/:id')
+    findOne(@Param('id') id: string) {
+        return this.formService.findOne(id);
+    }
 
 
     // update : id를 기준으로 특정 Form 수정
 
+    @Patch('/:id')
+    update(@Param('id') id: string, @Body() updateFormDto: CreateFormDto) {
+        return this.formService.update(id, updateFormDto);
+    }
+
 
     // remove : id를 기준으로 특정 Form 삭제
 
+    @Delete('/:id')
+    remove(@Param('id') id: string) {
+        return this.formService.remove(id);
+    }
+    
 
 }
