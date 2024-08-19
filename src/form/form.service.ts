@@ -16,14 +16,34 @@ export class FormService {
     }
 
     // findAll : 모든 Form 조회
+    
+    async findAll(): Promise<Form[]> {
+        return this.formModel.find().exec();
+    }
 
 
     // findOne : id를 기준으로 특정 Form 조회
 
+    async findOne(id: string): Promise<Form> {
+        const objId = new mongoose.Types.ObjectId(id);
+        return this.formModel.findById(objId).exec();
+    }
+
 
     // update : id를 기준으로 특정 Form 수정
 
+    async update(id: string, updateFormDto: CreateFormDto): Promise<Form> {
+        const objId = new mongoose.Types.ObjectId(id);
+        return this.formModel.findByIdAndUpdate(objId, { data: updateFormDto }, { new: true }).exec();
+    }
+    
 
     // remove : id를 기준으로 특정 Form 삭제
+
+    async remove(id: string): Promise<Form> {
+        const objId = new mongoose.Types.ObjectId(id);
+        return this.formModel.findByIdAndDelete(objId).exec();
+    }
+
 
 }
