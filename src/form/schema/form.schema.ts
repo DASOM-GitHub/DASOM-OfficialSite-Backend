@@ -5,8 +5,8 @@ export type FormDocument = Form & Document;
 
 @Schema()
 export class Form extends Document {
-    @Prop({ type: Types.ObjectId, default: () => new Types.ObjectId() })
-    _id: Types.ObjectId;
+    @Prop({ unique: true })
+    formId: number;
 
     @Prop({ type: Object, required: true })
     data: Record<string, any>;
