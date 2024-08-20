@@ -1,4 +1,4 @@
-import { DepartmentType } from "./dto/department.type";
+import { DepartmentEnum } from "./dto/department.enum";
 import { HydratedDocument } from "mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
@@ -10,7 +10,7 @@ export class Recruit {
   @Prop({ unique: true })
   applyId: number;
 
-  @Prop({ unique: true })
+  @Prop({ required: true })
   studentId: number;
 
   @Prop({ required: true })
@@ -22,8 +22,8 @@ export class Recruit {
   @Prop({ required: true })
   applicantContact: string;
 
-  @Prop({ required: true })
-  applicantDept: DepartmentType;
+  @Prop({ required: true, enum: DepartmentEnum })
+  applicantDept: DepartmentEnum;
 
   @Prop({ required: true })
   applicantGrade: number;
