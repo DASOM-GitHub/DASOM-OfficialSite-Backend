@@ -1,9 +1,11 @@
-import { IsOptional, IsString, Length } from "class-validator";
+import { IsEnum, IsOptional, IsString, Length } from "class-validator";
+import { SettingsEnum } from "./settings.enum";
 
 export class ServiceSettingsDto {
+    @IsEnum(SettingsEnum)
     @IsString()
     @Length(4, 20)
-    key: string;
+    key: SettingsEnum;
 
     @IsString()
     value: string;
