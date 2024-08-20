@@ -24,7 +24,7 @@ export class FormController {
 
     @Get('/:id')
     findOne(@Param('id') id: string) {
-        return this.formService.findOne(id);
+        return this.formService.findOne(Number(id));
     }
 
 
@@ -32,7 +32,7 @@ export class FormController {
 
     @Patch('/:id')
     update(@Param('id') id: string, @Body() updateFormDto: CreateFormDto) {
-        return this.formService.update(id, updateFormDto);
+        return this.formService.update(Number(id), updateFormDto);
     }
 
 
@@ -40,7 +40,7 @@ export class FormController {
 
     @Delete('/:id')
     remove(@Param('id') id: string) {
-        return this.formService.remove(id);
+        return this.formService.remove(Number(id));
     }
     
 
