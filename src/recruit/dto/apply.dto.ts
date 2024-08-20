@@ -1,5 +1,5 @@
-import { DepartmentType } from "./department.type";
-import { IsEmail, IsNumber, IsString, Length, Max, MaxLength, Min } from "class-validator";
+import { DepartmentEnum } from "./department.enum";
+import { IsEmail, IsEnum, IsNumber, IsString, Length, Max, MaxLength, Min } from "class-validator";
 
 export class ApplyDto {
   @Length(8, 8)
@@ -15,8 +15,9 @@ export class ApplyDto {
   @Length(13, 13)
   applicantContact: string;
 
+  @IsEnum(DepartmentEnum)
   @IsString()
-  applicantDept: DepartmentType;
+  applicantDept: DepartmentEnum;
 
   @IsNumber()
   @Min(1)
