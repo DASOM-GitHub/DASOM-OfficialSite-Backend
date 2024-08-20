@@ -1,4 +1,9 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger, NotFoundException
+} from "@nestjs/common";
 import { ApplyDto } from "./dto/apply.dto";
 import { Recruit } from "./recruit.schema";
 import { Model } from "mongoose";
@@ -21,16 +26,15 @@ export class RecruitService {
     try {
       return await application.save();
     } catch (error) {
-      if (error.code === 11000) // 학번 중복 오류 발생 시
-        throw new ConflictException('Already applied');
-      else
-        throw new InternalServerErrorException();
+      new Logger().log('Error while creating new application');
+      throw new InternalServerErrorException();
     }
   }
 
   // findAll : 모든 지원자 조회
   async findAll(): Promise<Recruit[]> {
     const applicants: Recruit[] = await this.recruitModel.find().exec();
+    if (!applicants) throw new NotFoundException();
     applicants.forEach((recruit) => {
       recruit.applyDate = this.serviceSettingsService.convertUtcDateToKst(recruit.applyDate);
     });
@@ -38,14 +42,26 @@ export class RecruitService {
   }
 
   // findOne : id를 기준으로 특정 지원자 조회
-
+  async findOne(applyId: number): Promise<Recruit> {
+    const result = await this.recruitModel.findOne({ applyId }).exec();
+    if (!result) throw new NotFoundException();
+    return result;
+  }
 
   // update : id를 기준으로 특정 지원자 수정
+  async update(applyId: number, updateDto: ApplyDto): Promise<Recruit> {
+    const result = await this.recruitModel.findOneAndUpdate({ applyId }, updateDto).exec();
+    if (!result) throw new NotFoundException();
+    return result;
+  }
 
   
   // remove : id를 기준으로 특정 지원자 삭제
-
-
+  async remove(applyId: number): Promise<number> {
+    const result = await this.recruitModel.findOneAndDelete({ applyId }).exec();
+    if (!result) throw new NotFoundException();
+    return applyId;
+  }
 
   // isRecruitmentActive : 현재 지원 기간인지 확인
   async isRecruitmentActive(): Promise<void> {
