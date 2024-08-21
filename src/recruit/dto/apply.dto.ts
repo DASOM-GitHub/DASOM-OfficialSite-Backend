@@ -8,9 +8,6 @@ export class ApplyDto {
   @IsString()
   applicantName: string;
 
-  @IsEmail()
-  applicantEmail: string;
-
   @IsString()
   @Length(13, 13)
   applicantContact: string;
