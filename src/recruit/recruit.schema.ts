@@ -17,9 +17,6 @@ export class Recruit {
   applicantName: string;
 
   @Prop({ required: true })
-  applicantEmail: string;
-
-  @Prop({ required: true })
   applicantContact: string;
 
   @Prop({ required: true, enum: DepartmentEnum })
