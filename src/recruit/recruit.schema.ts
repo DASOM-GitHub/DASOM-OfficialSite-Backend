@@ -29,7 +29,10 @@ export class Recruit {
   reasonForApply: string;
 
   @Prop({ required: true, default: false })
-  isPass: boolean; // 합격 여부 (true: 합격, false: 불합격, 기본값 : false)
+  firestPass: boolean; // 1차 합격 여부 (true: 합격, false: 불합격, 기본값 : false)
+
+  @Prop({ required: true, default: false })
+  secondPass: boolean; // 2차 합격 여부 (true: 합격, false: 불합격, 기본값 : false)
 
   @Prop({ default: () => new Date().toISOString() })
   applyDate: string;
