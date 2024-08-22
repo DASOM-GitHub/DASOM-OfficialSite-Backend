@@ -45,14 +45,14 @@ export class RecruitController {
 
   // firstPass : id를 기준으로 특정 지원자 1차 합불 처리
   @UseGuards(new JwtAuthGuard('access_token'))
-  @Post('firstPass/:id')
+  @Patch('firstPass/:id')
   firstPass(@Param('id') id: number, @Body('isPass') pass: boolean): Promise<Recruit> {
     return this.recruitService.firstPass(id, pass);
   }
 
   // secondPass : id를 기준으로 특정 지원자 2차 합불 처리
   @UseGuards(new JwtAuthGuard('access_token'))
-  @Post('secondPass/:id')
+  @Patch('secondPass/:id')
   secondPass(@Param('id') id: number, @Body('isPass') pass: boolean): Promise<Recruit> {
     return this.recruitService.secondPass(id, pass);
   }
