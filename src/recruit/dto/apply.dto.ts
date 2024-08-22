@@ -1,5 +1,5 @@
 import { DepartmentEnum } from "./department.enum";
-import { IsEmail, IsEnum, IsNumber, IsString, Length, Max, MaxLength, Min } from "class-validator";
+import { IsBoolean, IsEmail, IsEnum, IsNumber, IsString, Length, Max, MaxLength, Min } from "class-validator";
 
 export class ApplyDto {
   @Length(8, 8)
