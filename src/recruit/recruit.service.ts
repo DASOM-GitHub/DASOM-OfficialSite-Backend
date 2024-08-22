@@ -74,4 +74,11 @@ export class RecruitService {
     if (isBefore(now, recOpenSetting.value) || isAfter(now, recCloseSetting.value))
       throw new BadRequestException('Recruitment is not active');
   }
+
+  // pass : 합불 처리
+  async pass(applyId: number, pass: boolean): Promise<Recruit> {
+    const result = await this.recruitModel.findOneAndUpdate({ applyId }, { isPass: pass }).exec();
+    if (!result) throw new NotFoundException();
+    return result;
+  }
 }

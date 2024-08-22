@@ -28,6 +28,9 @@ export class Recruit {
   @Prop({ required: true })
   reasonForApply: string;
 
+  @Prop({ required: true })
+  isPass: boolean; // 합격 여부 (true: 합격, false: 불합격)
+
   @Prop({ default: () => new Date().toISOString() })
   applyDate: string;
 }
