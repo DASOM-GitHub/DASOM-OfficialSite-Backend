@@ -46,7 +46,7 @@ export class RecruitController {
   // pass : id를 기준으로 특정 지원자 합불 처리
   @UseGuards(new JwtAuthGuard('access_token'))
   @Post('pass/:id')
-  pass(@Param('id') id: number, @Param('pass') pass: boolean): Promise<Recruit> {
+  pass(@Param('id') id: number, @Body('isPass') pass: boolean): Promise<Recruit> {
     return this.recruitService.pass(id, pass);
   }
 
