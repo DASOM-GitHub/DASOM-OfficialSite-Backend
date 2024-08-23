@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/commo
 import { CreateFormDto } from './dto/create-form.dto';
 import { FormService } from './form.service';
 
-@Controller('form')
+@Controller('api/form')
 export class FormController {
     constructor(private readonly formService: FormService) {}
 
