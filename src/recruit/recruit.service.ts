@@ -101,11 +101,11 @@ export class RecruitService {
 
     // 지원자가 존재하지 않는 경우
     if (!applicant)
-      throw new NotFoundException('지원자가 존재하지 않습니다.');
+      throw new NotFoundException(`No such applicant found with studentId: ${ studentId }`);
 
     // 지원자의 연락처 뒷자리와 입력된 연락처 뒷자리가 일치하지 않는 경우
     if (contactLastDigit.toString() !== applicant.applicantContact.substring(9, 13))
-      throw new BadRequestException('입력한 정보가 일치하지 않습니다.');
+      throw new BadRequestException(`Invalid contact number of ${ studentId }`);
 
     if (!applicant.secondPass)// 지원자가 불합격 상태인 경우
       return ApplyResultDto.create(applicant.studentId, applicant.applicantName, false);
