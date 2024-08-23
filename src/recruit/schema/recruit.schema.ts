@@ -1,4 +1,4 @@
-import { DepartmentEnum } from "./dto/department.enum";
+import { DepartmentEnum } from "../dto/department.enum";
 import { HydratedDocument } from "mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
@@ -10,7 +10,7 @@ export class Recruit {
   @Prop({ unique: true })
   applyId: number;
 
-  @Prop({ required: true })
+  @Prop({ unique: true, required: true })
   studentId: number;
 
   @Prop({ required: true })
@@ -29,7 +29,7 @@ export class Recruit {
   reasonForApply: string;
 
   @Prop({ required: true, default: false })
-  firestPass: boolean; // 1차 합격 여부 (true: 합격, false: 불합격, 기본값 : false)
+  firstPass: boolean; // 1차 합격 여부 (true: 합격, false: 불합격, 기본값 : false)
 
   @Prop({ required: true, default: false })
   secondPass: boolean; // 2차 합격 여부 (true: 합격, false: 불합격, 기본값 : false)
