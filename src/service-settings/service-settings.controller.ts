@@ -4,7 +4,7 @@ import { ServiceSettingsDto } from "./dto/service-settings.dto";
 import { ServiceSettings } from "./schema/service-settings.schema";
 import { JwtAuthGuard } from "../auth/jwt/jwt.guard";
 
-@Controller('api/service')
+@Controller('service')
 export class ServiceSettingsController {
   constructor(private serviceSettingsService: ServiceSettingsService) {}
 
