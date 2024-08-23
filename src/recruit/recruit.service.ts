@@ -1,16 +1,17 @@
 import {
-  BadRequestException,
+  BadRequestException, ConflictException,
   Injectable,
   InternalServerErrorException,
   Logger, NotFoundException
 } from "@nestjs/common";
 import { ApplyDto } from "./dto/apply.dto";
-import { Recruit } from "./recruit.schema";
+import { Recruit } from "./schema/recruit.schema";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { ServiceSettingsService } from "../service-settings/service-settings.service";
 import { ServiceSettings } from "../service-settings/schema/service-settings.schema";
 import { isAfter, isBefore } from "date-fns";
+import { ApplyResultDto } from "./dto/result.dto";
 
 @Injectable()
 export class RecruitService {
@@ -26,8 +27,13 @@ export class RecruitService {
     try {
       return await application.save();
     } catch (error) {
-      new Logger().log('Error while creating new application');
-      throw new InternalServerErrorException();
+      if (error.code === 11000) {
+        new Logger().log(`Error while creating new application - studentId: ${ application.studentId } Duplicated`);
+        throw new ConflictException('Already applied');
+      } else {
+        new Logger().log('Error while creating new application - Internal Server Error');
+        throw new InternalServerErrorException();
+      }
     }
   }
 
@@ -50,7 +56,7 @@ export class RecruitService {
 
   // update : id를 기준으로 특정 지원자 수정
   async update(applyId: number, updateDto: ApplyDto): Promise<Recruit> {
-    const result = await this.recruitModel.findOneAndUpdate({ applyId }, updateDto).exec();
+    const result = await this.recruitModel.findOneAndUpdate({ applyId }, updateDto, { new: true }).exec();
     if (!result) throw new NotFoundException();
     return result;
   }
@@ -77,15 +83,34 @@ export class RecruitService {
 
   // firstPass : 1차 합불 처리
   async firstPass(applyId: number, pass: boolean): Promise<Recruit> {
-    const result = await this.recruitModel.findOneAndUpdate({ applyId }, { firestPass: pass }).exec();
+    const result = await this.recruitModel.findOneAndUpdate({ applyId }, { firstPass: pass }, { new: true }).exec();
     if (!result) throw new NotFoundException();
     return result;
   }
 
   // secondPass : 2차 합불 처리
   async secondPass(applyId: number, pass: boolean): Promise<Recruit> {
-    const result = await this.recruitModel.findOneAndUpdate({ applyId }, { secondPass: pass }).exec();
+    const result = await this.recruitModel.findOneAndUpdate({ applyId }, { secondPass: pass }, { new: true }).exec();
     if (!result) throw new NotFoundException();
     return result;
+  }
+
+  // checkRecruitResult : 합격자 조회
+  async checkApplyResult(studentId: number, contactLastDigit: number): Promise<ApplyResultDto> {
+    const applicant: Recruit = await this.recruitModel.findOne({ studentId }).exec();
+
+    // 지원자가 존재하지 않는 경우
+    if (!applicant)
+      throw new NotFoundException(`No such applicant found with studentId: ${ studentId }`);
+
+    // 지원자의 연락처 뒷자리와 입력된 연락처 뒷자리가 일치하지 않는 경우
+    if (contactLastDigit.toString() !== applicant.applicantContact.substring(9, 13))
+      throw new BadRequestException(`Invalid contact number of ${ studentId }`);
+
+    if (!applicant.secondPass)// 지원자가 불합격 상태인 경우
+      return ApplyResultDto.create(applicant.studentId, applicant.applicantName, false);
+
+    // 지원자가 합격 상태인 경우
+    return ApplyResultDto.create(applicant.studentId, applicant.applicantName, true);
   }
 }
