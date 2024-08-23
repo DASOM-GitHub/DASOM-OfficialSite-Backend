@@ -5,7 +5,7 @@ import { Recruit } from "./schema/recruit.schema";
 import { JwtAuthGuard } from "../auth/jwt/jwt.guard";
 import { ApplyResultDto } from "./dto/result.dto";
 
-@Controller('recruit')
+@Controller('api/recruit')
 export class RecruitController {
   constructor(private recruitService: RecruitService) {}
 
