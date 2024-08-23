@@ -1,9 +1,8 @@
-name: Build and Deploy - dev
+name: Build and Deploy
 
 on:
   push:
-    branches:
-      - develop
+    branches: [ "main", "develop" ]
 
 jobs:
   build:
@@ -53,7 +52,21 @@ jobs:
     needs: build
 
     steps:
-      - name: SSH and deploy
+      #- name: Deploy to Production Server
+      #  if: github.ref == 'refs/heads/main'
+      #  uses: appleboy/ssh-action@v0.1.5
+      #  with:
+      #    host: ${{ secrets.SERVER_HOST }}
+      #    username: ${{ secrets.SERVER_USERNAME }}
+      #    key: ${{ secrets.SERVER_SSH_KEY }}
+      #    script: |
+      #      cd ~/dasom
+      #      docker-compose pull
+      #      docker-compose up -d
+      #      docker image prune -f
+
+      - name: Deploy to Test Server
+        if: github.ref == 'refs/heads/develop'
         uses: appleboy/ssh-action@v0.1.5
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -63,4 +76,4 @@ jobs:
             cd ~/dasom
             docker-compose pull
             docker-compose up -d
-            docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep -E "^${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}:" | grep -v ':latest' | awk '{print $2}' | xargs -r docker rmi
+            docker image prune -f
