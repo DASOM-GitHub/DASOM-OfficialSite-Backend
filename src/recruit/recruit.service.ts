@@ -12,6 +12,8 @@ import { ServiceSettingsService } from "../service-settings/service-settings.ser
 import { ServiceSettings } from "../service-settings/schema/service-settings.schema";
 import { isAfter, isBefore } from "date-fns";
 import { ApplyResultDto } from "./dto/result.dto";
+import { ResultCheckDto } from "./dto/result-check.dto";
+import { ServiceSettingsDto } from "../service-settings/dto/service-settings.dto";
 
 @Injectable()
 export class RecruitService {
@@ -96,7 +98,7 @@ export class RecruitService {
   }
 
   // checkRecruitResult : 합격자 조회
-  async checkApplyResult(studentId: number, contactLastDigit: number): Promise<ApplyResultDto> {
+  async checkApplyResult({ checkType, studentId, contactLastDigit }: ResultCheckDto): Promise<ApplyResultDto> {
     const applicant: Recruit = await this.recruitModel.findOne({ studentId }).exec();
 
     // 지원자가 존재하지 않는 경우
@@ -107,10 +109,19 @@ export class RecruitService {
     if (contactLastDigit.toString() !== applicant.applicantContact.substring(9, 13))
       throw new BadRequestException(`Invalid contact number of ${ studentId }`);
 
-    if (!applicant.secondPass)// 지원자가 불합격 상태인 경우
-      return ApplyResultDto.create(applicant.studentId, applicant.applicantName, false);
+    const isPassed = checkType === 'FIRST_PASS' ? applicant.firstPass : applicant.secondPass;
 
-    // 지원자가 합격 상태인 경우
-    return ApplyResultDto.create(applicant.studentId, applicant.applicantName, true);
+    return ApplyResultDto.create(applicant.studentId, applicant.applicantName, checkType, !!isPassed);
+  }
+
+  // getRecruitSchedule : 모집 일정 조회 (지원자용)
+  async getRecruitSchedule(): Promise<ServiceSettingsDto[]> {
+    const serviceSettings: ServiceSettings[] = await this.serviceSettingsService.findAll();
+    return serviceSettings.map((setting) => {
+      return {
+        key: setting.key,
+        value: this.serviceSettingsService.convertUtcDateToKst(setting.value)
+      };
+    });
   }
 }

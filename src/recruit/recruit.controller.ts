@@ -4,6 +4,8 @@ import { ApplyDto } from "./dto/apply.dto";
 import { Recruit } from "./schema/recruit.schema";
 import { JwtAuthGuard } from "../auth/jwt/jwt.guard";
 import { ApplyResultDto } from "./dto/result.dto";
+import { ResultCheckDto } from "./dto/result-check.dto";
+import { ServiceSettingsDto } from "../service-settings/dto/service-settings.dto";
 
 @Controller('api/recruit')
 export class RecruitController {
@@ -17,9 +19,14 @@ export class RecruitController {
 
   // checkApplyResult : 합격 조회
   @Get('result')
-  checkApplyResult(@Body('studentId') studentId: number,
-                   @Body('contactLastDigit') contactLastDigit: number): Promise<ApplyResultDto> {
-    return this.recruitService.checkApplyResult(studentId, contactLastDigit);
+  checkApplyResult(@Body() resultCheckDto: ResultCheckDto): Promise<ApplyResultDto> {
+    return this.recruitService.checkApplyResult(resultCheckDto);
+  }
+
+  // getRecruitSchedule : 모집 일정 조회 (지원자용)
+  @Get('schedule')
+  getRecruitSchedule(): Promise<ServiceSettingsDto[]> {
+    return this.recruitService.getRecruitSchedule();
   }
 
   // findAll : 모든 지원자 조회
