@@ -11,7 +11,7 @@ export class Recruit {
   applyId: number;
 
   @Prop({ unique: true, required: true })
-  studentId: number;
+  studentId: string;
 
   @Prop({ required: true })
   applicantName: string;

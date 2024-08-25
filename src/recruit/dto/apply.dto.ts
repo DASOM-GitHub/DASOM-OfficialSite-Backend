@@ -1,15 +1,17 @@
 import { DepartmentEnum } from "./department.enum";
-import { IsBoolean, IsEmail, IsEnum, IsNumber, IsString, Length, Max, MaxLength, Min } from "class-validator";
+import { IsEnum, IsNumber, IsString, Length, Matches, Max, Min } from "class-validator";
 
 export class ApplyDto {
+  @IsString()
   @Length(8, 8)
-  studentId: number;
+  @Matches(/^[1-9]\d*$/, { message: 'studentId must not start with 0' })
+  studentId: string;
 
   @IsString()
   applicantName: string;
 
   @IsString()
-  @Length(13, 13)
+  @Length(10, 13)
   applicantContact: string;
 
   @IsEnum(DepartmentEnum)
@@ -22,6 +24,6 @@ export class ApplyDto {
   applicantGrade: number;
 
   @IsString()
-  @MaxLength(200)
+  // @MaxLength(200)
   reasonForApply: string;
 }

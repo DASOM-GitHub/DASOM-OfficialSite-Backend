@@ -1,8 +1,10 @@
 import {
-  BadRequestException, ConflictException,
+  BadRequestException,
+  ConflictException,
   Injectable,
   InternalServerErrorException,
-  Logger, NotFoundException
+  Logger,
+  NotFoundException
 } from "@nestjs/common";
 import { ApplyDto } from "./dto/apply.dto";
 import { Recruit } from "./schema/recruit.schema";
@@ -12,6 +14,8 @@ import { ServiceSettingsService } from "../service-settings/service-settings.ser
 import { ServiceSettings } from "../service-settings/schema/service-settings.schema";
 import { isAfter, isBefore } from "date-fns";
 import { ApplyResultDto } from "./dto/result.dto";
+import { CheckTypeEnum, ResultCheckDto } from "./dto/result-check.dto";
+import { ServiceSettingsDto } from "../service-settings/dto/service-settings.dto";
 
 @Injectable()
 export class RecruitService {
@@ -96,7 +100,7 @@ export class RecruitService {
   }
 
   // checkRecruitResult : 합격자 조회
-  async checkApplyResult(studentId: number, contactLastDigit: number): Promise<ApplyResultDto> {
+  async checkApplyResult({ checkType, studentId, contactLastDigit }: ResultCheckDto): Promise<ApplyResultDto> {
     const applicant: Recruit = await this.recruitModel.findOne({ studentId }).exec();
 
     // 지원자가 존재하지 않는 경우
@@ -107,10 +111,26 @@ export class RecruitService {
     if (contactLastDigit.toString() !== applicant.applicantContact.substring(9, 13))
       throw new BadRequestException(`Invalid contact number of ${ studentId }`);
 
-    if (!applicant.secondPass)// 지원자가 불합격 상태인 경우
-      return ApplyResultDto.create(applicant.studentId, applicant.applicantName, false);
+    // 서류 합격자 조회인지, 최종 합격자 조회인지에 따라 합격 여부 반환
+    const isPassed: boolean = checkType === CheckTypeEnum.FIRST_PASS ? applicant.firstPass : applicant.secondPass;
 
-    // 지원자가 합격 상태인 경우
-    return ApplyResultDto.create(applicant.studentId, applicant.applicantName, true);
+    // 서류 합격자에 한해 부가 정보 반환
+    if (checkType === CheckTypeEnum.FIRST_PASS && isPassed) {
+      const interviewApplyUrl = await this.serviceSettingsService.getServiceInfo();
+      return ApplyResultDto.create(applicant.studentId, applicant.applicantName, checkType, isPassed, interviewApplyUrl.value);
+    }
+
+    return ApplyResultDto.create(applicant.studentId, applicant.applicantName, checkType, isPassed);
+  }
+
+  // getRecruitSchedule : 모집 일정 조회 (지원자용)
+  async getRecruitSchedule(): Promise<ServiceSettingsDto[]> {
+    const serviceSettings: ServiceSettings[] = await this.serviceSettingsService.findAll();
+    return serviceSettings.map((setting) => {
+      return {
+        key: setting.key,
+        value: this.serviceSettingsService.convertUtcDateToKst(setting.value)
+      };
+    });
   }
 }
