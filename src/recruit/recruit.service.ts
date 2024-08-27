@@ -16,6 +16,8 @@ import { isAfter, isBefore } from "date-fns";
 import { ApplyResultDto } from "./dto/result.dto";
 import { CheckTypeEnum, ResultCheckDto } from "./dto/result-check.dto";
 import { ServiceSettingsDto } from "../service-settings/dto/service-settings.dto";
+import { SettingsEnum } from "../service-settings/dto/settings.enum";
+import { InternalErrorCodeEnum } from "../response/internal-error-code.enum";
 
 @Injectable()
 export class RecruitService {
@@ -101,6 +103,21 @@ export class RecruitService {
 
   // checkRecruitResult : 합격자 조회
   async checkApplyResult({ checkType, studentId, contactLastDigit }: ResultCheckDto): Promise<ApplyResultDto> {
+    // 합격 발표일 이전에 결과 조회 시 예외 발생
+    const now: Date = new Date();
+    if (checkType === CheckTypeEnum.FIRST_PASS) {
+      const midAnnounceSetting = await this.serviceSettingsService.findByKey(SettingsEnum.REC_MID_ANNOUNCE);
+      if (isBefore(now, new Date(midAnnounceSetting.value))) {
+        throw new BadRequestException(InternalErrorCodeEnum.NOT_CHECK_PERIOD);
+      }
+    } else if (checkType === CheckTypeEnum.SECOND_PASS) {
+      const finalAnnounceSetting = await this.serviceSettingsService.findByKey(SettingsEnum.REC_FINAL_ANNOUNCE);
+      if (isBefore(now, new Date(finalAnnounceSetting.value))) {
+        throw new BadRequestException(InternalErrorCodeEnum.NOT_CHECK_PERIOD);
+      }
+    }
+
+    // 지원자 조회
     const applicant: Recruit = await this.recruitModel.findOne({ studentId }).exec();
 
     // 지원자가 존재하지 않는 경우
@@ -109,7 +126,7 @@ export class RecruitService {
 
     // 지원자의 연락처 뒷자리와 입력된 연락처 뒷자리가 일치하지 않는 경우
     if (contactLastDigit.toString() !== applicant.applicantContact.substring(9, 13))
-      throw new BadRequestException(`Invalid contact number of ${ studentId }`);
+      throw new BadRequestException(InternalErrorCodeEnum.INFO_NOT_VALID);
 
     // 서류 합격자 조회인지, 최종 합격자 조회인지에 따라 합격 여부 반환
     const isPassed: boolean = checkType === CheckTypeEnum.FIRST_PASS ? applicant.firstPass : applicant.secondPass;
