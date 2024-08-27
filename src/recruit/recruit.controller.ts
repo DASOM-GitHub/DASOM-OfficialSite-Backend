@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { RecruitService } from "./recruit.service";
 import { ApplyDto } from "./dto/apply.dto";
 import { Recruit } from "./schema/recruit.schema";
@@ -19,7 +19,7 @@ export class RecruitController {
 
   // checkApplyResult : 합격 조회
   @Get('result')
-  checkApplyResult(@Body() resultCheckDto: ResultCheckDto): Promise<ApplyResultDto> {
+  checkApplyResult(@Query() resultCheckDto: ResultCheckDto): Promise<ApplyResultDto> {
     return this.recruitService.checkApplyResult(resultCheckDto);
   }
 
