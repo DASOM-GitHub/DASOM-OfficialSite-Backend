@@ -146,7 +146,7 @@ export class RecruitService {
     return serviceSettings.map((setting) => {
       return {
         key: setting.key,
-        value: this.serviceSettingsService.convertUtcDateToKst(setting.value)
+        value: setting.value
       };
     });
   }
