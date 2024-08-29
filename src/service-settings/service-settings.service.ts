@@ -30,7 +30,7 @@ export class ServiceSettingsService {
 
   // findAll : 모든 설정 조회
   async findAll(): Promise<ServiceSettings[]> {
-    const settings = await this.serviceSettingsModel.find().exec();
+    const settings: ServiceSettings[] = await this.serviceSettingsModel.find().exec();
     settings.forEach((setting) => {
       setting.value = this.convertUtcDateToKst(setting.value);
     })
