@@ -9,6 +9,7 @@ import { UserModule } from 'src/user/user.module';
 import { PassportModule } from '@nestjs/passport';
 import { LocalAuthGuard } from './local/local.guard';
 import { JwtAuthGuard } from './jwt/jwt.guard';
+import { RolesGuard } from './role/roles.guard';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { JwtAuthGuard } from './jwt/jwt.guard';
     LocalStrategy,
     JwtAuthGuard,
     LocalAuthGuard,
+    RolesGuard,
   ],
   exports: [AuthService],
 })
