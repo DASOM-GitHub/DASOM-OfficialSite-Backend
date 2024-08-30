@@ -17,4 +17,8 @@ export class UserService {
     async findByEmail(email: string): Promise<User | null> {
         return this.userModel.findOne({ email }).exec();
     }
+
+    async accept(email: string) {
+        return this.userModel.findOneAndUpdate({ email }, { isAccountActive: true }).exec();
+    }
 }
