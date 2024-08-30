@@ -8,31 +8,41 @@ import { LoginDto } from './dto/login.dto';
 export class AuthService {
 
     constructor(
-        private readonly usersService: UserService,
-      ) {}
+      private readonly usersService: UserService,
+    ) {}
 
     async register(body: LoginDto) {
-        const hashedPassword = await bcrypt.hash(body.password, 10);
-        return this.usersService.save({ ...body, password: hashedPassword });
+      const hashedPassword = await bcrypt.hash(body.password, 10);
+      return this.usersService.save({ ...body, password: hashedPassword });
     }
 
-      async login(user: any) {
-        const payload = { email: user.email }; 
-        const secret = process.env.JWT_SECRET;
-        const expiresIn = process.env.JWT_EXPIRES_IN;
+    async login(user: any) {
+      const email = user._doc.email;
+      const role = user._doc.role;
+      
+      const payload = { 
+        sub: email,
+        role: role,
+       }; 
+      const secret = process.env.JWT_SECRET;
+      const expiresIn = process.env.JWT_EXPIRES_IN;
     
-        return {
-          access_token: jwt.sign(payload, secret, { expiresIn }),
-        };
-      }
+      return {
+        access_token: jwt.sign(payload, secret, { expiresIn }),
+      };
+    }
+
+    async accept(email: string) {
+      return this.usersService.accept(email);
+    }
 
 
-      async validateUser(email: string, password: string): Promise<any> {
-        const user = await this.usersService.findByEmail(email);
-        if (user && await bcrypt.compare(password, user.password)) {
-            const { password, ...result } = user;
-          return result;
-        }
-        return null;
+    async validateUser(email: string, password: string): Promise<any> {
+      const user = await this.usersService.findByEmail(email);
+      if (user && await bcrypt.compare(password, user.password)) {
+        const { password, ...result } = user;
+        return result;
       }
+      return null;
+    }
 }
